@@ -79,6 +79,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Container _incomeIcon() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8)
+      ),
+      child: const Icon(Icons.download, color: Colors.lightBlue),
+    );
+  }
+  
   Container _expenseIcon() {
     return Container(
       decoration: BoxDecoration(
@@ -151,15 +161,5 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-
-  Container _incomeIcon() {
-    return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8)
-                ),
-                child: const Icon(Icons.download, color: Colors.lightBlue),
-              );
   }
 }
