@@ -1,6 +1,7 @@
 import 'package:calendar_appbar/calendar_appbar.dart';
 import 'package:finance_app/pages/category_page.dart';
 import 'package:finance_app/pages/home_page.dart';
+import 'package:finance_app/pages/transaction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -13,7 +14,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final List<Widget> _children = [const HomePage(), const CategoryPage()];
-  int currentIndex = 1;
+  int currentIndex = 0;
 
   void onTapTapped(int index) {
     setState(() {
@@ -29,7 +30,9 @@ class _MainPageState extends State<MainPage> {
       floatingActionButton: Visibility(
         visible: currentIndex == 0,
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TransactionPage()));
+          },
           backgroundColor: Colors.lightBlueAccent,
           child: const Icon(Icons.add, color: Colors.white),
         ),
