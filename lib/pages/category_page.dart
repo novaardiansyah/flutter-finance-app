@@ -19,18 +19,32 @@ class _CategoryPageState extends State<CategoryPage> {
   Future insert(String name, int type) async {
     DateTime now = DateTime.now();
 
-    final row = await database.into(database.categories)
+    return await database.into(database.categories)
       .insertReturning(
         CategoriesCompanion.insert(name: name, type: type, createdAt: now, updatedAt: now)
       );
-    print('row: ${row.toString()}');
+  }
+
+  Future update(int id, String name) async {
+    return await database.updateCategory(id, name);
+  }
+
+  Future delete(int id) async {
+    return await database.deleteCategory(id);
   }
 
   Future<List<Category>> getByType(int type) async {
     return await database.getByType(type);
   }
 
-  void openDialog() {
+  void openDialog(Category? category) {
+    String actionTitle = 'Tambah';
+
+    if (category != null) {
+      categoryNameController.text = category.name;
+      actionTitle = 'Edit';
+    }
+
     showDialog(
       context: context, 
       builder: (BuildContext context) {
@@ -39,8 +53,8 @@ class _CategoryPageState extends State<CategoryPage> {
             child: Center(
               child: Column(
                 children: [
-                  Text((isExpense) ? 'Tambah Pengeluaran' : 'Tambah Pemasukan', style: GoogleFonts.montserrat(
-                    fontSize: 18,
+                  Text((isExpense) ? '$actionTitle Kategori Pengeluaran' : '$actionTitle Kategori Pemasukan', style: GoogleFonts.montserrat(
+                    fontSize: 16,
                     color: (isExpense) ? Colors.red : Colors.lightBlue
                   )),
                   const SizedBox(height: 10),
@@ -53,7 +67,12 @@ class _CategoryPageState extends State<CategoryPage> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      insert(categoryNameController.text, (isExpense) ? 1 : 2);
+                      if (category == null) {
+                        insert(categoryNameController.text, (isExpense) ? 1 : 2);
+                      } else {
+                        update(category.id, categoryNameController.text);
+                      }
+
                       Navigator.of(context, rootNavigator: true).pop('dialog');
                       setState(() {
                         categoryNameController.clear(); 
@@ -119,12 +138,25 @@ class _CategoryPageState extends State<CategoryPage> {
                           child: ListTile(
                             title: Text(category.name),
                             leading: (isExpense) ? _expenseIcon() : _incomeIcon(),
-                            trailing: const Row(
+                            trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.delete, color: Colors.red),
-                                SizedBox(width: 10),
-                                Icon(Icons.edit, color: Colors.lightBlue),
+                                IconButton(
+                                  onPressed: () {
+                                    delete(category.id);
+                                    setState(() {
+                                      
+                                    });
+                                  }, 
+                                  icon: const Icon(Icons.delete, color: Colors.red),
+                                ),
+                                const SizedBox(width: 10),
+                                IconButton(
+                                  onPressed: () {
+                                    openDialog(category);
+                                  }, 
+                                  icon: const Icon(Icons.edit, color: Colors.lightBlue),
+                                ),
                               ],
                             ),
                           ),
@@ -136,9 +168,6 @@ class _CategoryPageState extends State<CategoryPage> {
               }
             },
           ),
-
-          // _cardTransaction(),
-          // _cardTransaction(),
         ],
       ),
     );
@@ -161,7 +190,7 @@ class _CategoryPageState extends State<CategoryPage> {
             inactiveThumbColor: Colors.lightBlue,
             activeColor: Colors.red,
           ),
-          IconButton(onPressed: () => openDialog(), icon: const Icon(Icons.add))
+          IconButton(onPressed: () => openDialog(null), icon: const Icon(Icons.add))
         ],
       ),
     );

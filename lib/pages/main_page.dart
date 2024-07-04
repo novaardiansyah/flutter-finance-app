@@ -59,7 +59,7 @@ class _MainPageState extends State<MainPage> {
       preferredSize: const Size.fromHeight(100), 
       child: Padding(
         padding: const EdgeInsets.only(top: 45, left: 16),
-        child: Text('Categories', style: GoogleFonts.montserrat(
+        child: Text('Kategori', style: GoogleFonts.montserrat(
           fontSize: 20,
         )),
       )
