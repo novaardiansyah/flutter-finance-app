@@ -4,7 +4,7 @@ import 'package:drift/drift.dart';
 class Transactions extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text().withLength(max: 255)();
-  IntColumn get categoriId => integer()();
+  IntColumn get categoryId => integer()();
   DateTimeColumn get date => dateTime()();
   IntColumn get amount => integer()();
   DateTimeColumn get createdAt => dateTime()();

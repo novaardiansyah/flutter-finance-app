@@ -1,3 +1,4 @@
+import 'package:finance_app/pages/crypto_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,8 +20,22 @@ class _HomePageState extends State<HomePage> {
             _cardIncomeExpense(),
 
             Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text('Transactions', style: GoogleFonts.montserrat(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CryptoPage()));
+                }, 
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateColor.resolveWith((states) => Colors.lightBlue),
+                  foregroundColor: WidgetStateColor.resolveWith((states) => Colors.white)
+                ),
+                child: const Text('Crypto Currency API')
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text('Transaksi', style: GoogleFonts.montserrat(
                 fontSize: 16,
                 fontWeight: FontWeight.bold
               )),
@@ -39,7 +54,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       child: Card(
-        elevation: 10,
+        elevation: 3,
         child: ListTile(
           trailing: const Row(
             mainAxisSize: MainAxisSize.min,
@@ -61,7 +76,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       child: Card(
-        elevation: 10,
+        elevation: 3,
         child: ListTile(
           trailing: const Row(
             mainAxisSize: MainAxisSize.min,
@@ -88,7 +103,7 @@ class _HomePageState extends State<HomePage> {
       child: const Icon(Icons.download, color: Colors.lightBlue),
     );
   }
-  
+
   Container _expenseIcon() {
     return Container(
       decoration: BoxDecoration(
@@ -117,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                 _incomeIcon(),
 
                 const SizedBox(width: 15),
-                
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -140,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                 _expenseIcon(),
 
                 const SizedBox(width: 15),
-                
+
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Nova Ardiansyah',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         primarySwatch: Colors.lightBlue,
         useMaterial3: true,
       ),

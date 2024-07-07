@@ -352,11 +352,11 @@ class $TransactionsTable extends Transactions
       additionalChecks: GeneratedColumn.checkTextLength(maxTextLength: 255),
       type: DriftSqlType.string,
       requiredDuringInsert: true);
-  static const VerificationMeta _categoriIdMeta =
-      const VerificationMeta('categoriId');
+  static const VerificationMeta _categoryIdMeta =
+      const VerificationMeta('categoryId');
   @override
-  late final GeneratedColumn<int> categoriId = GeneratedColumn<int>(
-      'categori_id', aliasedName, false,
+  late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
+      'category_id', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
@@ -388,7 +388,7 @@ class $TransactionsTable extends Transactions
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, name, categoriId, date, amount, createdAt, updatedAt, deletedAt];
+      [id, name, categoryId, date, amount, createdAt, updatedAt, deletedAt];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -408,13 +408,13 @@ class $TransactionsTable extends Transactions
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('categori_id')) {
+    if (data.containsKey('category_id')) {
       context.handle(
-          _categoriIdMeta,
-          categoriId.isAcceptableOrUnknown(
-              data['categori_id']!, _categoriIdMeta));
+          _categoryIdMeta,
+          categoryId.isAcceptableOrUnknown(
+              data['category_id']!, _categoryIdMeta));
     } else if (isInserting) {
-      context.missing(_categoriIdMeta);
+      context.missing(_categoryIdMeta);
     }
     if (data.containsKey('date')) {
       context.handle(
@@ -457,8 +457,8 @@ class $TransactionsTable extends Transactions
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      categoriId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}categori_id'])!,
+      categoryId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}category_id'])!,
       date: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
       amount: attachedDatabase.typeMapping
@@ -481,7 +481,7 @@ class $TransactionsTable extends Transactions
 class Transaction extends DataClass implements Insertable<Transaction> {
   final int id;
   final String name;
-  final int categoriId;
+  final int categoryId;
   final DateTime date;
   final int amount;
   final DateTime createdAt;
@@ -490,7 +490,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   const Transaction(
       {required this.id,
       required this.name,
-      required this.categoriId,
+      required this.categoryId,
       required this.date,
       required this.amount,
       required this.createdAt,
@@ -501,7 +501,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
-    map['categori_id'] = Variable<int>(categoriId);
+    map['category_id'] = Variable<int>(categoryId);
     map['date'] = Variable<DateTime>(date);
     map['amount'] = Variable<int>(amount);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -516,7 +516,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return TransactionsCompanion(
       id: Value(id),
       name: Value(name),
-      categoriId: Value(categoriId),
+      categoryId: Value(categoryId),
       date: Value(date),
       amount: Value(amount),
       createdAt: Value(createdAt),
@@ -533,7 +533,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return Transaction(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      categoriId: serializer.fromJson<int>(json['categoriId']),
+      categoryId: serializer.fromJson<int>(json['categoryId']),
       date: serializer.fromJson<DateTime>(json['date']),
       amount: serializer.fromJson<int>(json['amount']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -547,7 +547,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'categoriId': serializer.toJson<int>(categoriId),
+      'categoryId': serializer.toJson<int>(categoryId),
       'date': serializer.toJson<DateTime>(date),
       'amount': serializer.toJson<int>(amount),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -559,7 +559,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
   Transaction copyWith(
           {int? id,
           String? name,
-          int? categoriId,
+          int? categoryId,
           DateTime? date,
           int? amount,
           DateTime? createdAt,
@@ -568,7 +568,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
       Transaction(
         id: id ?? this.id,
         name: name ?? this.name,
-        categoriId: categoriId ?? this.categoriId,
+        categoryId: categoryId ?? this.categoryId,
         date: date ?? this.date,
         amount: amount ?? this.amount,
         createdAt: createdAt ?? this.createdAt,
@@ -580,7 +580,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
     return (StringBuffer('Transaction(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('categoriId: $categoriId, ')
+          ..write('categoryId: $categoryId, ')
           ..write('date: $date, ')
           ..write('amount: $amount, ')
           ..write('createdAt: $createdAt, ')
@@ -592,14 +592,14 @@ class Transaction extends DataClass implements Insertable<Transaction> {
 
   @override
   int get hashCode => Object.hash(
-      id, name, categoriId, date, amount, createdAt, updatedAt, deletedAt);
+      id, name, categoryId, date, amount, createdAt, updatedAt, deletedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Transaction &&
           other.id == this.id &&
           other.name == this.name &&
-          other.categoriId == this.categoriId &&
+          other.categoryId == this.categoryId &&
           other.date == this.date &&
           other.amount == this.amount &&
           other.createdAt == this.createdAt &&
@@ -610,7 +610,7 @@ class Transaction extends DataClass implements Insertable<Transaction> {
 class TransactionsCompanion extends UpdateCompanion<Transaction> {
   final Value<int> id;
   final Value<String> name;
-  final Value<int> categoriId;
+  final Value<int> categoryId;
   final Value<DateTime> date;
   final Value<int> amount;
   final Value<DateTime> createdAt;
@@ -619,7 +619,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   const TransactionsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
-    this.categoriId = const Value.absent(),
+    this.categoryId = const Value.absent(),
     this.date = const Value.absent(),
     this.amount = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -629,14 +629,14 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   TransactionsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
-    required int categoriId,
+    required int categoryId,
     required DateTime date,
     required int amount,
     required DateTime createdAt,
     required DateTime updatedAt,
     this.deletedAt = const Value.absent(),
   })  : name = Value(name),
-        categoriId = Value(categoriId),
+        categoryId = Value(categoryId),
         date = Value(date),
         amount = Value(amount),
         createdAt = Value(createdAt),
@@ -644,7 +644,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   static Insertable<Transaction> custom({
     Expression<int>? id,
     Expression<String>? name,
-    Expression<int>? categoriId,
+    Expression<int>? categoryId,
     Expression<DateTime>? date,
     Expression<int>? amount,
     Expression<DateTime>? createdAt,
@@ -654,7 +654,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
-      if (categoriId != null) 'categori_id': categoriId,
+      if (categoryId != null) 'category_id': categoryId,
       if (date != null) 'date': date,
       if (amount != null) 'amount': amount,
       if (createdAt != null) 'created_at': createdAt,
@@ -666,7 +666,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
   TransactionsCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
-      Value<int>? categoriId,
+      Value<int>? categoryId,
       Value<DateTime>? date,
       Value<int>? amount,
       Value<DateTime>? createdAt,
@@ -675,7 +675,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     return TransactionsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
-      categoriId: categoriId ?? this.categoriId,
+      categoryId: categoryId ?? this.categoryId,
       date: date ?? this.date,
       amount: amount ?? this.amount,
       createdAt: createdAt ?? this.createdAt,
@@ -693,8 +693,8 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
-    if (categoriId.present) {
-      map['categori_id'] = Variable<int>(categoriId.value);
+    if (categoryId.present) {
+      map['category_id'] = Variable<int>(categoryId.value);
     }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
@@ -719,7 +719,7 @@ class TransactionsCompanion extends UpdateCompanion<Transaction> {
     return (StringBuffer('TransactionsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('categoriId: $categoriId, ')
+          ..write('categoryId: $categoryId, ')
           ..write('date: $date, ')
           ..write('amount: $amount, ')
           ..write('createdAt: $createdAt, ')
@@ -898,7 +898,7 @@ typedef $$TransactionsTableInsertCompanionBuilder = TransactionsCompanion
     Function({
   Value<int> id,
   required String name,
-  required int categoriId,
+  required int categoryId,
   required DateTime date,
   required int amount,
   required DateTime createdAt,
@@ -909,7 +909,7 @@ typedef $$TransactionsTableUpdateCompanionBuilder = TransactionsCompanion
     Function({
   Value<int> id,
   Value<String> name,
-  Value<int> categoriId,
+  Value<int> categoryId,
   Value<DateTime> date,
   Value<int> amount,
   Value<DateTime> createdAt,
@@ -939,7 +939,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
-            Value<int> categoriId = const Value.absent(),
+            Value<int> categoryId = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
             Value<int> amount = const Value.absent(),
             Value<DateTime> createdAt = const Value.absent(),
@@ -949,7 +949,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
               TransactionsCompanion(
             id: id,
             name: name,
-            categoriId: categoriId,
+            categoryId: categoryId,
             date: date,
             amount: amount,
             createdAt: createdAt,
@@ -959,7 +959,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             required String name,
-            required int categoriId,
+            required int categoryId,
             required DateTime date,
             required int amount,
             required DateTime createdAt,
@@ -969,7 +969,7 @@ class $$TransactionsTableTableManager extends RootTableManager<
               TransactionsCompanion.insert(
             id: id,
             name: name,
-            categoriId: categoriId,
+            categoryId: categoryId,
             date: date,
             amount: amount,
             createdAt: createdAt,
@@ -1004,8 +1004,8 @@ class $$TransactionsTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get categoriId => $state.composableBuilder(
-      column: $state.table.categoriId,
+  ColumnFilters<int> get categoryId => $state.composableBuilder(
+      column: $state.table.categoryId,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -1048,8 +1048,8 @@ class $$TransactionsTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get categoriId => $state.composableBuilder(
-      column: $state.table.categoriId,
+  ColumnOrderings<int> get categoryId => $state.composableBuilder(
+      column: $state.table.categoryId,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:finance_app/models/database.dart';
 
 class TransactionPage extends StatefulWidget {
   const TransactionPage({super.key});
@@ -11,10 +12,30 @@ class TransactionPage extends StatefulWidget {
 
 class _TransactionPageState extends State<TransactionPage> {
   bool isExpense = true;
-  List<String> list = ['Kebutuhan', 'Pendidikan', 'Transportasi'];
-  late String dropdownValue = list.first;
+  // List<String> list = ['Kebutuhan', 'Pendidikan', 'Transportasi'];
+  // late String dropdownValue = list.first;
 
+  TextEditingController amountController = TextEditingController(); 
   TextEditingController dateController = TextEditingController(); 
+  TextEditingController nameController = TextEditingController(); 
+  Category? selectedCategory;
+
+  final AppDatabase database = AppDatabase();
+
+  Future insert(int amount, String name, int categoryId, DateTime date, int type) async {
+    DateTime now = DateTime.now();
+
+    final row = await database.into(database.transactions)
+      .insertReturning(
+        TransactionsCompanion.insert(name: name, categoryId: categoryId, date: date, amount: amount, createdAt: now, updatedAt: now)
+      );
+    
+    print('hasil insert: ' + row.toString());
+  } 
+
+  Future<List<Category>> getAllCategory(int type) async {
+    return await database.getByType(type);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +63,7 @@ class _TransactionPageState extends State<TransactionPage> {
                       onChanged: (bool value) {
                         setState(() {
                           isExpense = value;
+                          selectedCategory = null;
                         });
                       },
                       inactiveTrackColor: Colors.lightBlue[200],
@@ -63,6 +85,7 @@ class _TransactionPageState extends State<TransactionPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextFormField(
+                  controller: amountController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
@@ -70,7 +93,21 @@ class _TransactionPageState extends State<TransactionPage> {
                   ),
                 ),
               ),
-            
+
+              const SizedBox(height: 12),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: TextFormField(
+                  controller: nameController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    border: UnderlineInputBorder(),
+                    label: Text('Keterangan')
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 25),
 
               Padding(
@@ -80,31 +117,57 @@ class _TransactionPageState extends State<TransactionPage> {
                 )),
               ),
               
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: dropdownValue,
-                  icon: const Icon(Icons.arrow_downward),
-                  items: list.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+              FutureBuilder<List<Category>>(
+                future: getAllCategory((isExpense) ? 1 : 2), 
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding:  EdgeInsets.symmetric(horizontal: 16),
+                      child: CircularProgressIndicator()
                     );
-                  }).toList(), 
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  }, 
-                ),
-              ),
-            
-              const SizedBox(height: 15),
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          Text('Belum ada data kategori tersedia.', style: TextStyle(
+                            color: Colors.red,
+                          )),
+                        ],
+                      ),
+                    );
+                  } else {
+                    selectedCategory = snapshot.data!.first;
 
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: DropdownButton<Category>(
+                        isExpanded: true,
+                        value: selectedCategory,
+                        icon: const Icon(Icons.arrow_downward),
+                        items: snapshot.data!.map((Category category) {
+                          return DropdownMenuItem<Category>(
+                            value: category,
+                            child: Text(category.name),
+                          );
+                        }).toList(), 
+                        onChanged: (Category? value) {
+                          setState(() {
+                            selectedCategory = value!;
+                          });
+                        }, 
+                      ),
+                    );
+                  }
+                },
+              ),
+
+              const SizedBox(height: 8),
+            
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TextField(
+                child: TextFormField(
                   controller: dateController,
                   readOnly: true,
                   onTap: () async {
@@ -120,17 +183,29 @@ class _TransactionPageState extends State<TransactionPage> {
                     }
                   },
                   decoration: const InputDecoration(
-                    labelText: 'Tanggal Transaksi'
+                    labelText: 'Tanggal'
                   ),
                 ),
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 26),
 
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {}, 
-                  child: const Text('Simpan')
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateColor.resolveWith((states) => Colors.lightBlue),
+                        foregroundColor: WidgetStateColor.resolveWith((states) => Colors.white),
+                      ),
+                      onPressed: () {
+                        insert(int.parse(amountController.text), nameController.text, selectedCategory!.id, DateTime.parse(dateController.text), (isExpense ? 1 : 2));
+                      }, 
+                      child: const Text('Simpan Transaksi')
+                    )
+                  ]
                 ),
               )
             ],
